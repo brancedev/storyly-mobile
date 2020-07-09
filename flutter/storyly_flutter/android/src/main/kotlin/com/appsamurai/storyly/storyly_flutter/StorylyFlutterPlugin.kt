@@ -30,7 +30,9 @@ class StorylyFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            registrar.platformViewRegistry().registerViewFactory("FlutterStorylyView", FlutterStorylyViewFactory(registrar.messenger()))
+            val flutterStorylyViewFactory = FlutterStorylyViewFactory(registrar.messenger())
+            flutterStorylyViewFactory.context = registrar.activity()
+            registrar.platformViewRegistry().registerViewFactory("FlutterStorylyView", flutterStorylyViewFactory)
         }
     }
 
