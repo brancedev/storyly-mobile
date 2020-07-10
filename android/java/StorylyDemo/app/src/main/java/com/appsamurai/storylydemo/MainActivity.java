@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.appsamurai.storyly.Story;
 import com.appsamurai.storyly.StoryGroup;
+import com.appsamurai.storyly.StorylyInit;
 import com.appsamurai.storyly.StorylyListener;
+import com.appsamurai.storyly.StorylySegmentation;
 import com.appsamurai.storyly.StorylyView;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         StorylyView storylyView = findViewById(R.id.storyly_view);
-        storylyView.setStorylyId([YOUR_APP_ID_FROM_DASHBOARD]);
+        storylyView.setStorylyInit(new StorylyInit("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NfaWQiOjExNzIsImFwcF9pZCI6Nzg0LCJpbnNfaWQiOjc4MX0.YxMpnoqNPx8rnUjRT1_7ql4zcpsoDwbX9bJryhGQqPA"));
         storylyView.setStorylyListener(new StorylyListener() {
             @Override
             public void storylyLoaded(@NonNull StorylyView storylyView,

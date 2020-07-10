@@ -3,10 +3,7 @@ package com.appsamurai.storyly.storyly_flutter
 import android.content.Context
 import android.graphics.Color
 import android.view.View
-import com.appsamurai.storyly.Story
-import com.appsamurai.storyly.StoryGroup
-import com.appsamurai.storyly.StorylyListener
-import com.appsamurai.storyly.StorylyView
+import com.appsamurai.storyly.*
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
@@ -50,8 +47,8 @@ class FlutterStorylyView(
 
     private val storylyView: StorylyView by lazy {
         StorylyView(context).apply {
-            storylyId = args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set.")
-
+            storylyInit = StorylyInit(args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set."))
+            
             (args[ARGS_STORY_GROUP_ICON_BORDER_COLOR_SEEN] as? List<String>)?.let { colors -> setStoryGroupIconBorderColorSeen(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
             (args[ARGS_STORY_GROUP_ICON_BORDER_COLOR_NOT_SEEN] as? List<String>)?.let { colors -> setStoryGroupIconBorderColorNotSeen(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
             (args[ARGS_STORY_GROUP_ICON_BACKGROUND_COLOR] as? String)?.let { setStoryGroupIconBackgroundColor(Color.parseColor(it)) }
