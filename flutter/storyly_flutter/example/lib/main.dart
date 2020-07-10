@@ -33,9 +33,11 @@ class _MyAppState extends State<MyApp> {
           child: StorylyView(
             onStorylyViewCreated: onStorylyViewCreated,
             androidParam: StorylyParam()
-            ..storylyId = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NfaWQiOjExNzIsImFwcF9pZCI6Nzg0LCJpbnNfaWQiOjc4MX0.YxMpnoqNPx8rnUjRT1_7ql4zcpsoDwbX9bJryhGQqPA",
+            ..storylyId = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NfaWQiOjExNzIsImFwcF9pZCI6Nzg0LCJpbnNfaWQiOjc4MX0.YxMpnoqNPx8rnUjRT1_7ql4zcpsoDwbX9bJryhGQqPA"
+            ..storyGroupSize = StoryGroupSize.Small,
             iosParam: StorylyParam()
-            ..storylyId = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NfaWQiOjExNzIsImFwcF9pZCI6Nzg0LCJpbnNfaWQiOjc4MX0.YxMpnoqNPx8rnUjRT1_7ql4zcpsoDwbX9bJryhGQqPA",
+            ..storylyId = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NfaWQiOjExNzIsImFwcF9pZCI6Nzg0LCJpbnNfaWQiOjc4MX0.YxMpnoqNPx8rnUjRT1_7ql4zcpsoDwbX9bJryhGQqPA"
+            ..storyGroupSize = StoryGroupSize.Small,
             storylyLoaded: (storyGroupList) => print("storylyLoaded"),
             storylyLoadFailed: (errorMessage) => print("storylyLoadFailed"),
             storylyActionClicked: (story) => print("storylyActionClicked"),

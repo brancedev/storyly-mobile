@@ -11,6 +11,7 @@ internal class FlutterStorylyViewWrapper: UIView, StorylyDelegate {
     private let ARGS_STORY_ITEM_ICON_BORDER_COLOR = "storyItemIconBorderColor"
     private let ARGS_STORY_ITEM_TEXT_COLOR = "storyItemTextColor"
     private let ARGS_STORY_ITEM_PROGRESS_BAR_COLOR = "storyItemProgressBarColor"
+    private let ARGS_STORY_GROUP_SIZE = "storyGroupSize"
     
     private lazy var storylyView: StorylyView = StorylyView(frame: self.frame)
     
@@ -44,7 +45,7 @@ internal class FlutterStorylyViewWrapper: UIView, StorylyDelegate {
     override func layoutSubviews() {
         super.layoutSubviews()
         let storylyView = StorylyView(frame: self.frame)
-        storylyView.storylyId = self.args[self.ARGS_STORYLY_ID] as? String ?? ""
+        storylyView.storylyInit = Storyly.StorylyInit(storylyId: self.args[self.ARGS_STORYLY_ID] as? String ?? "")
         storylyView.delegate = self
         storylyView.rootViewController = UIApplication.shared.keyWindow?.rootViewController
         self.updateThemeFor(storylyView: storylyView, args: args)
@@ -60,6 +61,19 @@ internal class FlutterStorylyViewWrapper: UIView, StorylyDelegate {
         
         if let storyGroupIconBorderColorNotSeen = self.args[ARGS_STORY_GROUP_ICON_BORDER_COLOR_NOT_SEEN] as? [String] {
             storylyView.storyGroupIconBorderColorNotSeen = storyGroupIconBorderColorNotSeen.map{ UIColor(hexString: $0) }
+        }
+        
+        if let storyGroupSize = self.args[ARGS_STORY_GROUP_SIZE] as? Int {
+            switch storyGroupSize {
+            case 0:
+                storylyView.storyGroupSize = "small"
+            case 1:
+                storylyView.storyGroupSize = "large"
+            case 2:
+                storylyView.storyGroupSize = "xlarge"
+            default:
+                storylyView.storyGroupSize = "large"
+            }
         }
         
         if let storyGroupTextColor = self.args[ARGS_STORY_GROUP_TEXT_COLOR] as? String {
@@ -97,8 +111,8 @@ extension FlutterStorylyViewWrapper {
                 ["index": story.index,
                  "title": story.title,
                  "media": ["type": story.media.type.rawValue,
-                           "url": story.media.url.absoluteString,
-                           "actionUrl": story.media.actionUrl]]
+                           "url": story.media.url,
+                           "actionUrl": story.media.actionUrl!]]
             }]
         })
     }
@@ -112,8 +126,8 @@ extension FlutterStorylyViewWrapper {
                                         arguments: ["index": story.index,
                                                     "title": story.title,
                                                     "media": ["type": story.media.type.rawValue,
-                                                              "url": story.media.url.absoluteString,
-                                                              "actionUrl": story.media.actionUrl]])
+                                                              "url": story.media.url,
+                                                              "actionUrl": story.media.actionUrl!]])
         return true
     }
     
