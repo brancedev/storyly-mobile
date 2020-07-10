@@ -43,6 +43,7 @@ class FlutterStorylyView(
         private const val ARGS_STORY_ITEM_ICON_BORDER_COLOR = "storyItemIconBorderColor"
         private const val ARGS_STORY_ITEM_TEXT_COLOR = "storyItemTextColor"
         private const val ARGS_STORY_ITEM_PROGRESS_BAR_COLOR = "storyItemProgressBarColor"
+        private const val ARGS_STORY_GROUP_SIZE = "storyGroupSize"
     }
 
     private val storylyView: StorylyView by lazy {
@@ -57,6 +58,7 @@ class FlutterStorylyView(
             (args[ARGS_STORY_ITEM_ICON_BORDER_COLOR] as? List<String>)?.let { colors -> setStoryItemIconBorderColor(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
             (args[ARGS_STORY_ITEM_TEXT_COLOR] as? String)?.let { setStoryItemTextColor(Color.parseColor(it)) }
             (args[ARGS_STORY_ITEM_PROGRESS_BAR_COLOR] as? List<String>)?.let { colors -> setStoryItemProgressBarColor(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
+            (args[ARGS_STORY_GROUP_SIZE] as? Int)?.let { setStoryGroupSize(StoryGroupSize.values()[it]) }
 
             storylyListener = object : StorylyListener {
                 override fun storylyActionClicked(storylyView: StorylyView, story: Story): Boolean {

@@ -114,6 +114,7 @@ class StorylyParam {
   List<Color> storyItemIconBorderColor;
   Color storyItemTextColor;
   List<Color> storyItemProgressBarColor;
+  StoryGroupSize storyGroupSize;
 
   dynamic toMap() {
     Map<String, dynamic> paramsMap = <String, dynamic>{ "storylyId": this.storylyId };
@@ -125,6 +126,9 @@ class StorylyParam {
     paramsMap['storyItemIconBorderColor'] = this.storyItemIconBorderColor != null ? this.storyItemIconBorderColor.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
     paramsMap['storyItemTextColor'] = this.storyItemTextColor != null ? '#${this.storyItemTextColor.value.toRadixString(16)}' : null;
     paramsMap['storyItemProgressBarColor'] = this.storyItemProgressBarColor != null ? this.storyItemProgressBarColor.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
+    paramsMap['storyGroupSize'] = this.storyGroupSize != null ? this.storyGroupSize.index : StoryGroupSize.Large.index;
     return paramsMap;
   }
 }
+
+enum StoryGroupSize { Small, Large, XLarge, }
