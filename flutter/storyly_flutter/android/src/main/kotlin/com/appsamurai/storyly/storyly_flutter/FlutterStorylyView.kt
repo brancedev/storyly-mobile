@@ -63,7 +63,7 @@ class FlutterStorylyView(
         StorylyView(context).apply {
             if (args.containsKey(ARGS_SEGMENTS) && args[ARGS_SEGMENTS] != null) {
                 val segmentation = StorylySegmentation(HashSet<String>(args[ARGS_SEGMENTS] as? List<String>),
-                        true,
+                        false,
                         this@FlutterStorylyView)
                 storylyInit = StorylyInit(args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set."),
                         segmentation,

@@ -74,7 +74,7 @@ public class FlutterStorylyView: NSObject, FlutterPlatformView, StorylyDelegate,
     private func setupStorylyView() {
         let segmentsArray = args[ARGS_SEGMENTS] as? Array<String>
         if (segmentsArray != nil) {
-            let segmentation = Storyly.StorylySegmentation(segments: Set<String>(segmentsArray!), isDynamicSegmentationEnabled: true, dynamicSegmentationCallback: self)
+            let segmentation = Storyly.StorylySegmentation(segments: Set<String>(segmentsArray!), isDynamicSegmentationEnabled: false, dynamicSegmentationCallback: self)
             storylyView.storylyInit = Storyly.StorylyInit(storylyId: args[ARGS_STORYLY_ID] as? String ?? "", segmentation: segmentation, customParameter: args[ARGS_CUSTOM_PARAMETER] as? String ?? nil)
         } else {
             let segmentation = Storyly.StorylySegmentation(segments: nil)
