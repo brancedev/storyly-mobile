@@ -9,6 +9,9 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class FlutterStorylyViewFactory(private val messenger: BinaryMessenger) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     internal lateinit var context: Context
@@ -21,7 +24,7 @@ class FlutterStorylyView(
         messenger: BinaryMessenger,
         viewId: Int,
         private val args: HashMap<String, Any>
-) : PlatformView, StorylyListener {
+) : PlatformView, StorylyListener, StorylyDynamicSegmentationCallback {
 
     private val methodChannel: MethodChannel = MethodChannel(messenger, "com.appsamurai.storyly/flutter_storyly_view_$viewId").apply {
         setMethodCallHandler { call, result ->
@@ -44,12 +47,33 @@ class FlutterStorylyView(
         private const val ARGS_STORY_ITEM_TEXT_COLOR = "storyItemTextColor"
         private const val ARGS_STORY_ITEM_PROGRESS_BAR_COLOR = "storyItemProgressBarColor"
         private const val ARGS_STORY_GROUP_SIZE = "storyGroupSize"
+        private const val ARGS_CUSTOM_PARAMETER = "customParameter"
+        private const val ARGS_SEGMENTS = "segments"
+
+    }
+
+    override fun filter(storylyGroupItemSegments: Set<String>?, segments: Set<String>?): Boolean {
+        methodChannel.invokeMethod("dynamicSegmentationCallback", 
+                mapOf("storylyGroupItemSegments" to (storylyGroupItemSegments?.toList() ?: Collections.emptySet<String>()), 
+                        "segments" to (segments?.toList() ?: Collections.emptySet<String>())))
+        return true
     }
 
     private val storylyView: StorylyView by lazy {
         StorylyView(context).apply {
-            storylyInit = StorylyInit(args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set."))
-            
+            if (args.containsKey(ARGS_SEGMENTS) && args[ARGS_SEGMENTS] != null) {
+                val segmentation = StorylySegmentation(HashSet<String>(args[ARGS_SEGMENTS] as? List<String>),
+                        true,
+                        this@FlutterStorylyView)
+                storylyInit = StorylyInit(args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set."),
+                        segmentation,
+                        args[ARGS_CUSTOM_PARAMETER] as? String ?: null)
+            } else {
+                storylyInit = StorylyInit(args[ARGS_STORYLY_ID] as? String ?: throw Exception("StorylyId must be set."),
+                        StorylySegmentation(null),
+                        args[ARGS_CUSTOM_PARAMETER] as? String ?: null)
+            }
+
             (args[ARGS_STORY_GROUP_ICON_BORDER_COLOR_SEEN] as? List<String>)?.let { colors -> setStoryGroupIconBorderColorSeen(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
             (args[ARGS_STORY_GROUP_ICON_BORDER_COLOR_NOT_SEEN] as? List<String>)?.let { colors -> setStoryGroupIconBorderColorNotSeen(colors.map { color -> Color.parseColor(color) }.toTypedArray()) }
             (args[ARGS_STORY_GROUP_ICON_BACKGROUND_COLOR] as? String)?.let { setStoryGroupIconBackgroundColor(Color.parseColor(it)) }

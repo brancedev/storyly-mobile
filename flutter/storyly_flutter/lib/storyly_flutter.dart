@@ -15,18 +15,20 @@ class StorylyView extends StatefulWidget {
   final Function(Map) storylyActionClicked;
   final Function() storylyStoryShown;
   final Function() storylyStoryDismissed;
+  final Function(Map) dynamicSegmentationCallback;
 
-  const StorylyView(
-      {Key key,
-      this.onStorylyViewCreated,
-      this.androidParam,
-      this.iosParam,
-      this.storylyLoaded,
-      this.storylyLoadFailed,
-      this.storylyActionClicked,
-      this.storylyStoryShown,
-      this.storylyStoryDismissed})
-      : super(key: key);
+  const StorylyView({
+    Key key,
+    this.onStorylyViewCreated,
+    this.androidParam,
+    this.iosParam,
+    this.storylyLoaded,
+    this.storylyLoadFailed,
+    this.storylyActionClicked,
+    this.storylyStoryShown,
+    this.storylyStoryDismissed,
+    this.dynamicSegmentationCallback,
+  }) : super(key: key);
 
   @override
   State<StorylyView> createState() => _StorylyViewState();
@@ -36,20 +38,11 @@ class _StorylyViewState extends State<StorylyView> {
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return AndroidView(
-          viewType: 'FlutterStorylyView',
-          onPlatformViewCreated: _onPlatformViewCreated,
-          creationParams: widget.androidParam.toMap(),
-          creationParamsCodec: const StandardMessageCodec());
+      return AndroidView(viewType: 'FlutterStorylyView', onPlatformViewCreated: _onPlatformViewCreated, creationParams: widget.androidParam.toMap(), creationParamsCodec: const StandardMessageCodec());
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return UiKitView(
-          viewType: 'FlutterStorylyView',
-          onPlatformViewCreated: _onPlatformViewCreated,
-          creationParams: widget.iosParam.toMap(),
-          creationParamsCodec: const StandardMessageCodec());
+      return UiKitView(viewType: 'FlutterStorylyView', onPlatformViewCreated: _onPlatformViewCreated, creationParams: widget.iosParam.toMap(), creationParamsCodec: const StandardMessageCodec());
     }
-    return Text(
-        '$defaultTargetPlatform is not supported yet for Storyly Flutter plugin.');
+    return Text('$defaultTargetPlatform is not supported yet for Storyly Flutter plugin.');
   }
 
   void _onPlatformViewCreated(int _id) {
@@ -78,6 +71,9 @@ class _StorylyViewState extends State<StorylyView> {
       case 'storylyStoryDismissed':
         widget.storylyStoryDismissed();
         break;
+      case 'dynamicSegmentationCallback':
+        widget.dynamicSegmentationCallback(call.arguments);
+        break;
     }
   }
 }
@@ -86,8 +82,7 @@ class StorylyViewController {
   MethodChannel _methodChannel;
 
   StorylyViewController.init(int id) {
-    _methodChannel =
-        new MethodChannel('com.appsamurai.storyly/flutter_storyly_view_$id');
+    _methodChannel = new MethodChannel('com.appsamurai.storyly/flutter_storyly_view_$id');
   }
 
   Future<void> refresh() {
@@ -104,8 +99,8 @@ class StorylyViewController {
 }
 
 class StorylyParam {
-  @required String storylyId;
-
+  @required
+  String storylyId;
   List<Color> storyGroupIconBorderColorSeen;
   List<Color> storyGroupIconBorderColorNotSeen;
   Color storyGroupIconBackgroundColor;
@@ -115,11 +110,14 @@ class StorylyParam {
   Color storyItemTextColor;
   List<Color> storyItemProgressBarColor;
   StoryGroupSize storyGroupSize;
+  String customParameter;
+  List<String> segments;
 
   dynamic toMap() {
-    Map<String, dynamic> paramsMap = <String, dynamic>{ "storylyId": this.storylyId };
+    Map<String, dynamic> paramsMap = <String, dynamic>{"storylyId": this.storylyId};
     paramsMap['storyGroupIconBorderColorSeen'] = this.storyGroupIconBorderColorSeen != null ? this.storyGroupIconBorderColorSeen.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
-    paramsMap['storyGroupIconBorderColorNotSeen'] = this.storyGroupIconBorderColorNotSeen != null ? this.storyGroupIconBorderColorNotSeen.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
+    paramsMap['storyGroupIconBorderColorNotSeen'] =
+        this.storyGroupIconBorderColorNotSeen != null ? this.storyGroupIconBorderColorNotSeen.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
     paramsMap['storyGroupIconBackgroundColor'] = this.storyGroupIconBackgroundColor != null ? '#${this.storyGroupIconBackgroundColor.value.toRadixString(16)}' : null;
     paramsMap['storyGroupTextColor'] = this.storyGroupTextColor != null ? '#${this.storyGroupTextColor.value.toRadixString(16)}' : null;
     paramsMap['storyGroupPinIconColor'] = this.storyGroupPinIconColor != null ? '#${this.storyGroupPinIconColor.value.toRadixString(16)}' : null;
@@ -127,8 +125,14 @@ class StorylyParam {
     paramsMap['storyItemTextColor'] = this.storyItemTextColor != null ? '#${this.storyItemTextColor.value.toRadixString(16)}' : null;
     paramsMap['storyItemProgressBarColor'] = this.storyItemProgressBarColor != null ? this.storyItemProgressBarColor.map((color) => '#${color.value.toRadixString(16)}').toList() : null;
     paramsMap['storyGroupSize'] = this.storyGroupSize != null ? this.storyGroupSize.index : StoryGroupSize.Large.index;
+    paramsMap['customParameter'] = this.customParameter;
+    paramsMap['segments'] = this.segments != null ? this.segments : null;
     return paramsMap;
   }
 }
 
-enum StoryGroupSize { Small, Large, XLarge, }
+enum StoryGroupSize {
+  Small,
+  Large,
+  XLarge,
+}
